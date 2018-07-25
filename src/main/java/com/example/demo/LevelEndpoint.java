@@ -3,6 +3,8 @@ package com.example.demo;
 import com.google.gson.Gson;
 import com.qa.constants.Constants;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -27,10 +29,16 @@ public class LevelEndpoint {
     private final RestTemplate restTemplate;
     private final Gson gson;
 
-    public LevelEndpoint(RabbitTemplate rabbitTemplate, RestTemplate restTemplate, Gson gson) {
+
+    private final Avatar avatar;
+
+
+    public LevelEndpoint(RabbitTemplate rabbitTemplate, RestTemplate restTemplate, Gson gson, Avatar avatar) {
         this.rabbitTemplate = rabbitTemplate;
         this.restTemplate = restTemplate;
         this.gson = gson;
+
+        this.avatar = avatar;
     }
 
     @RequestMapping(value = "/getAllLevels")
@@ -74,7 +82,7 @@ public class LevelEndpoint {
         BufferedReader in;
         StringBuffer response = null;
         try {
-            String url = "https://avatars.dicebear.com/v2/male/123456.svg";
+            String url = "https://avatars.dicebear.com/v2/identicon/"+(this.avatar.generateSeed()) + ".svg";
 
             URL obj = new URL(url);
             HttpURLConnection con = (HttpURLConnection) obj.openConnection();
